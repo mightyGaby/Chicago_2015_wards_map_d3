@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
+    <title>D3 World Map</title>
+    <style>
+
+    body {
+                font-family: Verdana, Helvetica, Arial, sans-serif;
+            }
+
+            h1 {
+                font-weight: normal;
+                font-size: 18px;
+            }
+
+            .bg {
+                fill: none;
+            }
+
+            .ward-border {
+                stroke: #777;
+                stroke-linejoin: round;
+                stroke-dasharray: 1,1;
+                fill: none;
+                pointer-events: none;
+            }
+
+            #map {
+                position: relative;
+            }
+
+    </style>
+  </head>
+  <body>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
+  <div id="map"></div>
+
+  <script>
+  var dispatch = d3.dispatch("load");
+
+
+  var width = 539;
+  var height = 690;
+
+  var projection = d3.geo.transverseMercator()
+      .rotate([88 + 20 / 60, -36 - 40 / 60]);
+
+  var path = d3.geo.path()
+      .projection(projection);
+
+  var nclasses = 7;
+
+  var quantize = d3.scale.quantize()
+      .domain([0, 1])
+      .range(d3.range(nclasses).map(function(i) {
+          return "q" + i + "-" + nclasses;
+      }));
+
+  var svg = d3.select("#map").append("svg")
+      .attr("width", width)
+      .attr("height", height)
+
+  svg.append("rect")
+      .attr("class", "bg")
+      .attr("width", width)
+      .attr("height", height);
+
+  var g = svg.append("g")
+              .attr("class", "map");
+
+  var svg = d3.select("body").append("svg")
+      .attr("width", width)
+      .attr("height", height);
+
+  d3.json("chicago.json", function(error, chiwards) {
+    if (error) return console.error(error);
+
+    var wards = topojson.feature(chiwards, chiwards.objects.chicago_2015_wards);
+
+    projection
+        .scale(1)
+        .translate([0, 0]);
+
+    var b = path.bounds(wards);
+    var s = .95 / Math.max((b[1][0] - b[0][0]) / width, (b[1][1] - b[0][1]) / height);
+    var t = [(width - s * (b[1][0] + b[0][0])) / 2, (height - s * (b[1][1] + b[0][1])) / 2];
+
+    projection
+        .scale(s)
+        .translate(t);
+
+    var keyFn = function(d) { return d.id; }
+
+
+    g.append("g")
+        .attr("class", "ward-border")
+        .selectAll("path")
+        .data(wards.features)
+        .enter().append("path")
+        .attr("d", path);
+  });
+
+  d3.select(self.frameElement).style("height", height+"px");
+
+
+
+  </script>
+</body>
+</html>
