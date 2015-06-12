@@ -7,44 +7,45 @@
     <style>
 
     body {
-                font-family: Verdana, Helvetica, Arial, sans-serif;
-            }
+      font-family: Verdana, Helvetica, Arial, sans-serif;
+      }
 
-            h1 {
-                font-weight: normal;
-                font-size: 18px;
-            }
+    h1 {
+      font-weight: normal;
+      font-size: 18px;
+    }
 
-            .bg {
-                fill: none;
-            }
+    .bg {
+      fill: none;
+    }
 
-            .ward-border {
-                stroke: #777;
-                stroke-linejoin: round;
-                stroke-dasharray: 1,1;
-                fill: none;
-                pointer-events: none;
-            }
+    .ward-border {
+      stroke: #777;
+      stroke-linejoin: round;
+      stroke-dasharray: 1,1;
+      fill: none;
+      pointer-events: none;
+    }
 
-            #map {
-                position: relative;
-            }
+    #map {
+      position: relative;
+    }
 
     </style>
   </head>
   <body>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://d3js.org/topojson.v1.min.js"></script>
+
   <div id="map"></div>
 
   <script>
-  var dispatch = d3.dispatch("load");
 
-
+  //Defines Map Dimensions
   var width = 539;
   var height = 690;
 
+  //Defines projection
   var projection = d3.geo.transverseMercator()
       .rotate([88 + 20 / 60, -36 - 40 / 60]);
 
@@ -59,6 +60,7 @@
           return "q" + i + "-" + nclasses;
       }));
 
+  //Creates SVG canvas for map rendering
   var svg = d3.select("#map").append("svg")
       .attr("width", width)
       .attr("height", height)
@@ -75,6 +77,7 @@
       .attr("width", width)
       .attr("height", height);
 
+  //Loads shapefile and creates SVG shape
   d3.json("chicago.json", function(error, chiwards) {
     if (error) return console.error(error);
 
@@ -104,8 +107,6 @@
   });
 
   d3.select(self.frameElement).style("height", height+"px");
-
-
 
   </script>
 </body>
