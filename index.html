@@ -73,10 +73,6 @@
   var g = svg.append("g")
               .attr("class", "map");
 
-  var svg = d3.select("body").append("svg")
-      .attr("width", width)
-      .attr("height", height);
-
   //Loads shapefile and creates SVG shape
   d3.json("chicago.json", function(error, chiwards) {
     if (error) return console.error(error);
